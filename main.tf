@@ -18,6 +18,12 @@ locals {
 }
 
 data "aws_region" "current" {}
+data "aws_subnets" "subnets" {
+  filter {
+    name = "vpc-id"
+    values = [var.vpc_id]
+  }
+}
 
 resource "random_string" "db_password" {
   length  = 12
@@ -25,6 +31,12 @@ resource "random_string" "db_password" {
   upper   = true
   numeric = true
   special = false
+}
+
+// create a db subnet group for the rds instance
+resource "aws_db_subnet_group" "get_started_rds_subnet_group" {
+  name       = "get-started-rds-subnet-group"
+  subnet_ids = toset(data.aws_subnets.subnets.ids)
 }
 
 resource "aws_db_instance" "get_started_rds_postgres_instance" {
@@ -42,6 +54,7 @@ resource "aws_db_instance" "get_started_rds_postgres_instance" {
   apply_immediately        = true
   multi_az                 = false
   dedicated_log_volume     = false
+  db_subnet_group_name     = aws_db_subnet_group.get_started_rds_subnet_group.name
 }
 
 # Need to open access to the database port via a security rule despite "publicly_accessible"
