@@ -10,6 +10,13 @@ terraform {
       version = "~> 3.0"
     }
   }
+  backend "remote" {
+    hostname = "xometry.scalr.io"
+    organization = "scre-prod"
+    workspaces {
+      name = "humanitec-tests"
+    }
+  }
 }
 
 locals {
