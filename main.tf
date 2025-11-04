@@ -62,6 +62,7 @@ resource "aws_db_instance" "get_started_rds_postgres_instance" {
   multi_az                 = false
   dedicated_log_volume     = false
   db_subnet_group_name     = aws_db_subnet_group.get_started_rds_subnet_group.name
+  vpc_security_group_ids   = ["sg-020dee05ff548fa6b "]
 }
 
 # Need to open access to the database port via a security rule despite "publicly_accessible"
